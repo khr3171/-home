@@ -1,11 +1,6 @@
 "use strict";
 (() => {
   const paths = {
-    coffee: '<path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4ZM17 8h2a3 3 0 0 1 0 6h-2M7 2v3M12 2v3"/>',
-    palette: '<path d="M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 1-3.7 2 2 0 0 1 1-3.7h2a4 4 0 0 0 4-4c0-4-4-6.6-9-6.6Z"/><circle cx="7" cy="9" r="1"/><circle cx="11" cy="6" r="1"/><circle cx="16" cy="8" r="1"/><circle cx="6" cy="14" r="1"/>',
-    suitcase: '<rect x="4" y="6" width="16" height="15" rx="2"/><path d="M9 6V3h6v3M8 6v15M16 6v15M7 21v1M17 21v1"/>',
-    roller: '<rect x="3" y="3" width="14" height="6" rx="1"/><path d="M17 6h4v7H11v3"/><rect x="9" y="16" width="4" height="6" rx="1"/>',
-    sprout: '<path d="M12 22V12M12 15C5 15 3 11 3 6c7 0 9 4 9 9ZM12 11c0-6 3-9 9-9 0 6-3 9-9 9Z"/>',
     heart: '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/>',
     clipboard: '<rect x="5" y="4" width="14" height="18" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/><path d="m8 13 2 2 5-5M8 18h8"/>',
     pin: '<path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
@@ -71,35 +66,6 @@
   dialog.addEventListener("click", event => {
     const rect = dialog.getBoundingClientRect();
     if (event.target === dialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) dialog.close();
-  });
-  // 상담 번호는 site-config.js에서 관리합니다. 임시 번호에는 전화 연결을 만들지 않습니다.
-  const contactDialog = document.getElementById("contact-dialog");
-  const contactOpen = document.getElementById("contact-open");
-  const contactClose = document.getElementById("contact-close");
-  const contactCall = document.getElementById("contact-call");
-  const contact = (window.SITE_CONFIG || {}).contact || {};
-  const phoneNumber = String(contact.number || "051-000-0000").trim();
-  const callable = contact.isTemporary === false && /^0[0-9-]{8,15}$/.test(phoneNumber) && phoneNumber !== "051-000-0000";
-  document.querySelectorAll("[data-contact-number]").forEach(el => { el.textContent = phoneNumber; });
-  if (callable) {
-    contactCall.href = "tel:" + phoneNumber.replace(/-/g, "");
-    contactCall.hidden = false;
-    document.getElementById("contact-temporary").hidden = true;
-    document.querySelector("[data-contact-temporary]").textContent = "눌러서 상담 안내 보기";
-  }
-  contactOpen.addEventListener("click", () => {
-    if (typeof contactDialog.showModal !== "function") {
-      window.alert("궁금한 점은 " + phoneNumber + "로 문의해 주세요." + (callable ? "" : " 현재는 임시 번호예요."));
-      return;
-    }
-    contactDialog.showModal();
-    contactClose.focus();
-  });
-  contactClose.addEventListener("click", () => contactDialog.close());
-  contactDialog.addEventListener("close", () => contactOpen.focus());
-  contactDialog.addEventListener("click", event => {
-    const rect = contactDialog.getBoundingClientRect();
-    if (event.target === contactDialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) contactDialog.close();
   });
   if ("IntersectionObserver" in window) {
     const links = [...document.querySelectorAll(".header nav a")];

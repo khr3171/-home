@@ -3,7 +3,5 @@
 // 접수가 끝나면 주소를 비우세요. 현재 모집 중일 때만 주소를 연결하세요.
 window.SITE_CONFIG = {
   diagnosis: { url: "", label: "진단검사 신청하기" },
-  education: { url: "", label: "자립교육 신청하기" },
-  // 실제 상담 번호로 바꾸고 isTemporary를 false로 바꾸면 전화 버튼이 표시됩니다.
-  contact: { number: "051-000-0000", isTemporary: true }
+  education: { url: "", label: "자립교육 신청하기" }
 };

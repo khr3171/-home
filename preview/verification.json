@@ -1,6 +1,26 @@
 {
-  "checkedAt": "2026-10-06T14:14:07.576Z",
+  "checkedAt": "2026-10-06T14:42:38.770Z",
   "results": [
+    {
+      "name": "five navigation links",
+      "pass": true
+    },
+    {
+      "name": "six other organization cards",
+      "pass": true
+    },
+    {
+      "name": "four planned work experience cards",
+      "pass": true
+    },
+    {
+      "name": "100-person rounded infographic",
+      "pass": true
+    },
+    {
+      "name": "all section links resolve",
+      "pass": true
+    },
     {
       "name": "desktop",
       "width": 1440,
@@ -8,29 +28,47 @@
       "missingImages": 0
     },
     {
-      "name": "dialog Escape and focus",
+      "name": "phone guidance dialog opens",
       "pass": true
     },
     {
-      "name": "desktop large text",
+      "name": "placeholder phone is not callable",
+      "pass": true
+    },
+    {
+      "name": "phone dialog Escape and focus restore",
+      "pass": true
+    },
+    {
+      "name": "application dialog preserved",
+      "pass": true
+    },
+    {
+      "name": "desktop enlarged text",
       "width": 1440,
       "scroll": 1440,
       "missingImages": 0
     },
     {
-      "name": "mobile",
+      "name": "390px mobile",
       "width": 390,
       "scroll": 390,
       "missingImages": 0
     },
     {
-      "name": "mobile large text",
+      "name": "mobile phone dialog",
       "width": 390,
       "scroll": 390,
       "missingImages": 0
     },
     {
-      "name": "320px large text",
+      "name": "390px enlarged text",
+      "width": 390,
+      "scroll": 390,
+      "missingImages": 0
+    },
+    {
+      "name": "320px enlarged text",
       "width": 320,
       "scroll": 320,
       "missingImages": 0
@@ -42,7 +80,15 @@
       "missingImages": 0
     },
     {
-      "name": "application URL config",
+      "name": "configured application link",
+      "pass": true
+    },
+    {
+      "name": "real phone configuration enables tel link",
+      "pass": true
+    },
+    {
+      "name": "no browser script errors",
       "pass": true
     }
   ],
