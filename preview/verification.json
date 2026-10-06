@@ -1,0 +1,50 @@
+{
+  "checkedAt": "2026-10-06T14:14:07.576Z",
+  "results": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "scroll": 1440,
+      "missingImages": 0
+    },
+    {
+      "name": "dialog Escape and focus",
+      "pass": true
+    },
+    {
+      "name": "desktop large text",
+      "width": 1440,
+      "scroll": 1440,
+      "missingImages": 0
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "scroll": 390,
+      "missingImages": 0
+    },
+    {
+      "name": "mobile large text",
+      "width": 390,
+      "scroll": 390,
+      "missingImages": 0
+    },
+    {
+      "name": "320px large text",
+      "width": 320,
+      "scroll": 320,
+      "missingImages": 0
+    },
+    {
+      "name": "200 percent text",
+      "width": 1440,
+      "scroll": 1440,
+      "missingImages": 0
+    },
+    {
+      "name": "application URL config",
+      "pass": true
+    }
+  ],
+  "errors": []
+}
