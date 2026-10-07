@@ -94,30 +94,3 @@ html{scroll-padding-top:var(--header-offset,125px)}
 
 .header-inner{flex-wrap:wrap}.header nav{flex-wrap:wrap}
 @media(max-width:380px){.brand strong{font-size:.9375rem}.brand small{display:none}}
-
-/* Representative activity illustrations: readable text remains on white. */
-.local-card{padding:0;overflow:hidden;--local-accent:#25634d;--local-tint:#edf5ed}
-.local-card--chacha{--local-tint:#fbefe6;--local-accent:#805033}
-.local-card--geumjeong{--local-tint:#edf3fa;--local-accent:#305777}
-.local-card--mirinae{--local-tint:#f1edf8;--local-accent:#635180}
-.local-card--maeil{--local-tint:#edf5e8;--local-accent:#436338}
-.local-card--namgu-family{--local-tint:#fcf0e9;--local-accent:#82513b}
-.local-card--namgu-learning{--local-tint:#faf4df;--local-accent:#75602c}
-.local-visual{width:100%;margin:0;background:var(--local-tint)}
-.local-visual img{width:100%;aspect-ratio:2/1;height:auto;display:block;object-fit:cover;object-position:center}
-.local-visual figcaption{font-size:.8125rem;line-height:1.6;color:#526158;padding:7px 24px;text-align:right}
-.local-card-body{padding:28px 32px 32px;flex:1;display:flex;flex-direction:column;align-items:flex-start;width:100%;min-width:0}
-.local-theme{width:100%;margin-bottom:24px}
-.local-theme>span{display:inline-block;font-size:.875rem;font-weight:700;line-height:1.6;padding:4px 12px;border-radius:6px;background:var(--local-tint);color:var(--local-accent)}
-.local-theme>p{font-size:1.25rem;font-weight:750;color:var(--ink);line-height:1.6;margin:10px 0 0}
-.local-card .local-card-top{margin-bottom:12px}
-.local-card .local-card-top .line-icon{width:25px;height:25px}
-.local-card .region-label{background:transparent;padding:0;font-size:.9375rem;color:var(--muted)}
-.local-card h3{font-size:1.5rem;line-height:1.5}
-@media(max-width:800px){.local-card-body{padding:24px}.local-theme>p{font-size:1.125rem}.local-visual figcaption{padding:7px 20px}.local-card h3{font-size:1.375rem}}
-@media print{.local-visual{display:none}.local-card{break-inside:avoid}}
-
-/* Long organization names stay readable when text is enlarged. */
-.local-card-body>*{max-width:100%;overflow-wrap:anywhere}
-.local-card h3,.partner-title h3{overflow-wrap:anywhere}
-.partner-title>div{min-width:0;overflow-wrap:anywhere}

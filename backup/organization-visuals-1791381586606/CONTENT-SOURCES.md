@@ -86,11 +86,3 @@ https://data.bdi.re.kr/Home/RPTView.mbz?action=MAPP_0000000007&schIdx=2763
 https://www.w3.org/WAI/WCAG2/supplemental/patterns/o4p07-step-instructions/
 https://www.w3.org/WAI/WCAG2/supplemental/patterns/o7p01-human-help/
 https://www.w3.org/WAI/test-evaluate/involving-users/
-
-## 2026-10-07 기관별 대표 그림
-6개 대표 그림은 내장 ImageGen으로 새로 생성한 활동 설명용 일러스트입니다.
-기관의 실제 시설, 직원, 참여자 사진이 아닙니다. 실제 운영·모집을 새로 확인했다는 의미도 아닙니다.
-카드 위에 그림을 배치하고 안내 글은 흰 배경에 유지합니다. 그림마다 설명과 대체 텍스트를 제공합니다.
-생성 프롬프트 전체: assets/local-illustration-prompts.json
-자산: assets/local-chacha.webp, local-geumjeong.webp, local-mirinae.webp,
-local-maeil.webp, local-namgu-family.webp, local-namgu-learning.webp
