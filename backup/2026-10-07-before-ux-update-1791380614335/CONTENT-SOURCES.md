@@ -74,15 +74,3 @@ https://data.bdi.re.kr/Home/RPTView.mbz?action=MAPP_0000000007&schIdx=2763
 바리스타·디자인·여행사·도배장판은 향후 준비할 일경험 분야의 예시입니다.
 기관명·모집·협약·채용·구체적인 직무가 확정됐다는 의미가 아닙니다.
 051-000-0000은 사용자 요청에 따른 임시 상담 번호입니다. 실제 전화 연결은 만들지 않았습니다.
-
-## 2026-10-07 이용 편의 개선
-신청 대상·비용·일정·서류·장소·연락 방법은 아직 제공되지 않아 '준비 중'으로 표시합니다.
-확정되지 않은 연령 제한, 본인 부담금, 대리 신청 가능 여부를 임의로 만들지 않았습니다.
-준비 중/모집 중/모집 마감 상태는 site-config.js의 status와 실제 신청 주소로 관리합니다.
-상담 번호가 미확정이면 예시 번호를 화면에서 숨기고 부산사회서비스원 공식 홈페이지로 연결합니다.
-다른 기관의 대상 안내는 앞서 확인한 공개 사업 자료의 일반 개요이며 현재 모집 조건을 확정하는 정보가 아닙니다.
-첨부 PDF는 GitHub 업로드 시 링크 오류를 줄이도록 assets/busan-support-report.pdf라는 영문 파일명으로 함께 저장합니다.
-인지 접근성 관련 참고:
-https://www.w3.org/WAI/WCAG2/supplemental/patterns/o4p07-step-instructions/
-https://www.w3.org/WAI/WCAG2/supplemental/patterns/o7p01-human-help/
-https://www.w3.org/WAI/test-evaluate/involving-users/

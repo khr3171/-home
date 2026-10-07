@@ -1,24 +1,24 @@
 {
-  "checkedAt": "2026-10-06T14:42:38.770Z",
+  "checkedAt": "2026-10-07T13:46:32.844Z",
   "results": [
     {
-      "name": "five navigation links",
+      "name": "both programs have six application facts",
       "pass": true
     },
     {
-      "name": "six other organization cards",
+      "name": "five easy FAQs",
       "pass": true
     },
     {
-      "name": "four planned work experience cards",
+      "name": "six organization guidance cards",
       "pass": true
     },
     {
-      "name": "100-person rounded infographic",
+      "name": "placeholder phone not exposed",
       "pass": true
     },
     {
-      "name": "all section links resolve",
+      "name": "linked PDF responds 200",
       "pass": true
     },
     {
@@ -28,23 +28,23 @@
       "missingImages": 0
     },
     {
-      "name": "phone guidance dialog opens",
+      "name": "pending contact guidance",
       "pass": true
     },
     {
-      "name": "placeholder phone is not callable",
+      "name": "contact focus restores",
       "pass": true
     },
     {
-      "name": "phone dialog Escape and focus restore",
+      "name": "preparing application notice",
       "pass": true
     },
     {
-      "name": "application dialog preserved",
+      "name": "keyboard FAQ opens",
       "pass": true
     },
     {
-      "name": "desktop enlarged text",
+      "name": "desktop large text",
       "width": 1440,
       "scroll": 1440,
       "missingImages": 0
@@ -56,10 +56,24 @@
       "missingImages": 0
     },
     {
-      "name": "mobile phone dialog",
-      "width": 390,
-      "scroll": 390,
-      "missingImages": 0
+      "name": "mobile menu initially collapsed",
+      "pass": true
+    },
+    {
+      "name": "mobile menu opens",
+      "pass": true
+    },
+    {
+      "name": "menu closes after selection",
+      "pass": true
+    },
+    {
+      "name": "persistent mobile help",
+      "pass": true
+    },
+    {
+      "name": "mobile contact focus restores",
+      "pass": true
     },
     {
       "name": "390px enlarged text",
@@ -74,21 +88,39 @@
       "missingImages": 0
     },
     {
+      "name": "320px mobile",
+      "width": 320,
+      "scroll": 320,
+      "missingImages": 0
+    },
+    {
       "name": "200 percent text",
       "width": 1440,
       "scroll": 1440,
       "missingImages": 0
     },
     {
-      "name": "configured application link",
+      "name": "open program links directly to application",
       "pass": true
     },
     {
-      "name": "real phone configuration enables tel link",
+      "name": "closed program never links to old application",
       "pass": true
     },
     {
-      "name": "no browser script errors",
+      "name": "editable conditions",
+      "pass": true
+    },
+    {
+      "name": "editable FAQs",
+      "pass": true
+    },
+    {
+      "name": "real phone and hours configuration",
+      "pass": true
+    },
+    {
+      "name": "no browser errors",
       "pass": true
     }
   ],

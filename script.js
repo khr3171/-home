@@ -33,74 +33,129 @@
     setLarge(large);
     try { localStorage.setItem("hangeoreum-large-text", String(large)); } catch (_) {}
   });
-  const dialog = document.getElementById("application-dialog");
-  let lastTrigger = null;
-  const configured = [];
+
+  const config = window.SITE_CONFIG || {};
+  const navigation = document.getElementById("main-navigation");
+  const menuToggle = document.getElementById("menu-toggle");
+  const mobileQuery = window.matchMedia("(max-width:800px)");
+  function syncHeaderOffset() {
+    document.documentElement.style.setProperty("--header-offset", (Math.ceil(document.querySelector(".header").getBoundingClientRect().height) + 16) + "px");
+  }
+  function closeMenu() {
+    navigation.classList.remove("menu-open");
+    menuToggle.setAttribute("aria-expanded", "false");
+    menuToggle.textContent = "메뉴 보기";
+    syncHeaderOffset();
+  }
+  menuToggle.addEventListener("click", () => {
+    const open = menuToggle.getAttribute("aria-expanded") !== "true";
+    navigation.classList.toggle("menu-open", open);
+    menuToggle.setAttribute("aria-expanded", String(open));
+    menuToggle.textContent = open ? "메뉴 닫기" : "메뉴 보기";
+    syncHeaderOffset();
+  });
+  navigation.querySelectorAll("a").forEach(a => a.addEventListener("click", closeMenu));
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && menuToggle.getAttribute("aria-expanded") === "true") {
+      closeMenu(); menuToggle.focus();
+    }
+  });
+  if (mobileQuery.addEventListener) mobileQuery.addEventListener("change", closeMenu);
+  window.addEventListener("resize", syncHeaderOffset);
+  if ("ResizeObserver" in window) new ResizeObserver(syncHeaderOffset).observe(document.querySelector(".header"));
+  syncHeaderOffset();
+
+  document.querySelectorAll("[data-program-field]").forEach(el => {
+    const [program, field] = el.dataset.programField.split(".");
+    const value = config[program] && config[program].fields && config[program].fields[field];
+    if (typeof value === "string" && value.trim()) el.textContent = value;
+  });
+  document.querySelectorAll("[data-faq]").forEach(el => {
+    const answer = config.faq && config.faq[el.dataset.faq];
+    if (typeof answer === "string" && answer.trim()) el.textContent = answer;
+  });
+  function bindDialog(dialog, closeButton, getTrigger) {
+    closeButton.addEventListener("click", () => dialog.close());
+    dialog.addEventListener("close", () => { const trigger = getTrigger(); if (trigger) trigger.focus(); });
+    dialog.addEventListener("click", event => {
+      const rect = dialog.getBoundingClientRect();
+      if (event.target === dialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) dialog.close();
+    });
+  }
+  const applicationDialog = document.getElementById("application-dialog");
+  let applicationTrigger = null;
+  let openPrograms = 0;
   document.querySelectorAll("[data-program]").forEach(button => {
     const name = button.dataset.program;
-    const settings = (window.SITE_CONFIG || {})[name] || {};
+    const settings = config[name] || {};
+    const title = name === "diagnosis" ? "진단검사" : "자립교육";
+    const badge = document.querySelector('[data-status="' + name + '"]');
     let url = null;
     try { const parsed = new URL(settings.url); if (parsed.protocol === "https:") url = parsed.href; } catch (_) {}
-    if (url) {
-      configured.push(name);
-      button.href = url;
-      button.target = "_blank";
-      button.rel = "noopener noreferrer";
-      button.append(Object.assign(document.createElement("span"), {className:"sr-only",textContent:" (새 창)"}));
-      const badge = document.querySelector('[data-status="' + name + '"]');
-      badge.textContent = "신청 페이지 연결"; badge.classList.add("open");
+    const isClosed = settings.status === "closed";
+    const isOpen = !isClosed && url && settings.status === "open";
+    if (isOpen) {
+      openPrograms += 1;
+      button.href = url; button.target = "_blank"; button.rel = "noopener noreferrer";
+      button.classList.remove("outlined"); button.classList.add("primary");
+      button.textContent = title + " 신청하기";
+      button.append(Object.assign(document.createElement("span"), {className:"sr-only",textContent:" (다른 홈페이지, 새 창)"}));
+      badge.textContent = "모집 중"; badge.classList.add("open");
     } else {
+      badge.textContent = isClosed ? "모집 마감" : "모집 준비 중";
+      button.textContent = (isClosed ? "모집 마감" : "모집 준비 중") + " · 안내 보기";
       button.setAttribute("aria-haspopup", "dialog");
       button.addEventListener("click", event => {
-        if (typeof dialog.showModal !== "function") return;
-        event.preventDefault();
-        lastTrigger = button;
-        document.getElementById("dialog-title").textContent = (name === "diagnosis" ? "진단검사" : "자립교육") + " 신청을 준비하고 있어요.";
-        dialog.showModal();
+        if (typeof applicationDialog.showModal !== "function") return;
+        event.preventDefault(); applicationTrigger = button;
+        document.getElementById("dialog-title").textContent = title + (isClosed ? " 모집이 끝났어요." : " 모집을 준비하고 있어요.");
+        document.getElementById("dialog-description").textContent = isClosed ?
+          "현재는 신청을 받지 않아요. 다음 모집 소식은 부산사회서비스원 홈페이지에서 확인해 주세요." :
+          "현재는 홈페이지에서 신청을 받지 않아요. 참여 조건과 신청 일정은 모집 안내에서 알려드릴게요.";
+        applicationDialog.showModal();
         document.getElementById("dialog-close").focus();
       });
     }
   });
-  if (configured.length) {
+  if (openPrograms) {
     const help = document.querySelector(".application-help div");
-    help.querySelector("strong").textContent = configured.length === 2 ? "신청 버튼을 누르면 신청 페이지가 열려요." : "연결된 프로그램은 신청 페이지에서 확인해 주세요.";
-    help.querySelector("p").textContent = "참여 대상, 신청 기간, 준비할 서류를 확인해 주세요. 신청 페이지가 없는 프로그램은 준비 중이에요.";
+    help.querySelector("strong").textContent = "모집 중인 프로그램은 신청서로 바로 연결돼요.";
+    help.querySelector("p").textContent = "참여 조건과 서류를 확인한 뒤 신청해 주세요. 준비 중이거나 마감된 프로그램은 안내만 볼 수 있어요.";
   }
-  document.getElementById("dialog-close").addEventListener("click", () => dialog.close());
-  dialog.addEventListener("close", () => { if (lastTrigger) lastTrigger.focus(); });
-  dialog.addEventListener("click", event => {
-    const rect = dialog.getBoundingClientRect();
-    if (event.target === dialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) dialog.close();
-  });
-  // 상담 번호는 site-config.js에서 관리합니다. 임시 번호에는 전화 연결을 만들지 않습니다.
+  bindDialog(applicationDialog, document.getElementById("dialog-close"), () => applicationTrigger);
   const contactDialog = document.getElementById("contact-dialog");
-  const contactOpen = document.getElementById("contact-open");
   const contactClose = document.getElementById("contact-close");
   const contactCall = document.getElementById("contact-call");
-  const contact = (window.SITE_CONFIG || {}).contact || {};
-  const phoneNumber = String(contact.number || "051-000-0000").trim();
+  const contact = config.contact || {};
+  const phoneNumber = String(contact.number || "").trim();
   const callable = contact.isTemporary === false && /^0[0-9-]{8,15}$/.test(phoneNumber) && phoneNumber !== "051-000-0000";
-  document.querySelectorAll("[data-contact-number]").forEach(el => { el.textContent = phoneNumber; });
+  const contactTriggers = [...document.querySelectorAll("[data-contact-open]")];
+  let contactTrigger = null;
+  document.querySelectorAll("[data-contact-number]").forEach(el => {
+    el.textContent = callable ? phoneNumber : (el.closest("dialog") ? "상담 번호 준비 중" : "문의 방법 알아보기");
+  });
   if (callable) {
     contactCall.href = "tel:" + phoneNumber.replace(/-/g, "");
     contactCall.hidden = false;
     document.getElementById("contact-temporary").hidden = true;
-    document.querySelector("[data-contact-temporary]").textContent = "눌러서 상담 안내 보기";
-  }
-  contactOpen.addEventListener("click", () => {
-    if (typeof contactDialog.showModal !== "function") {
-      window.alert("궁금한 점은 " + phoneNumber + "로 문의해 주세요." + (callable ? "" : " 현재는 임시 번호예요."));
-      return;
+    document.querySelector("[data-contact-temporary]").textContent = contact.hours || "누르면 전화로 연결돼요";
+    if (contact.hours) {
+      const hours = document.getElementById("contact-hours"); hours.hidden = false; hours.textContent = "상담 시간: " + contact.hours;
     }
-    contactDialog.showModal();
-    contactClose.focus();
-  });
-  contactClose.addEventListener("click", () => contactDialog.close());
-  contactDialog.addEventListener("close", () => contactOpen.focus());
-  contactDialog.addEventListener("click", event => {
-    const rect = contactDialog.getBoundingClientRect();
-    if (event.target === contactDialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) contactDialog.close();
-  });
+    document.querySelector("#mobile-contact>span:last-child").textContent = "전화 문의";
+    [document.getElementById("contact-open"), document.getElementById("mobile-contact")].forEach(el => {
+      el.removeAttribute("aria-haspopup"); el.removeAttribute("aria-controls");
+      el.setAttribute("aria-label", "전화 문의 " + phoneNumber + (contact.hours ? ", 상담 시간 " + contact.hours : ""));
+    });
+  }
+  contactTriggers.forEach(trigger => trigger.addEventListener("click", () => {
+    if (callable && ["contact-open","mobile-contact"].includes(trigger.id)) {
+      window.location.href = contactCall.href; return;
+    }
+    if (typeof contactDialog.showModal !== "function") { window.location.href = document.getElementById("contact-official").href; return; }
+    contactTrigger = trigger; contactDialog.showModal(); contactClose.focus();
+  }));
+  bindDialog(contactDialog, contactClose, () => contactTrigger);
   if ("IntersectionObserver" in window) {
     const links = [...document.querySelectorAll(".header nav a")];
     const observer = new IntersectionObserver(entries => {
