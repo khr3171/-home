@@ -116,7 +116,7 @@ async function loadPhotos(append = false) {
   try {
     const constraints = [sdk.orderByKey(), sdk.limitToLast(12)]; if (append && photoCursor) constraints.push(sdk.endBefore(photoCursor));
     const snapshot = await sdk.get(sdk.query(sdk.ref(db, 'photos'), ...constraints)); if (epoch !== photoEpoch) return;
-    const rows = []; snapshot.forEach(child => rows.push([child.key, child.val()])); photoCursor = rows[0]?.[0];
+    const rows = []; snapshot.forEach(child => { rows.push([child.key, child.val()]); }); photoCursor = rows[0]?.[0];
     for (const [id, record] of rows.reverse()) {
       const card = element('article', '', 'photo-card'); const img = element('img'); img.alt = record.description || record.title; img.loading = 'lazy'; img.width = record.width; img.height = record.height;
       const body = element('div', '', 'card-body'); body.append(element('h3', record.title), element('p', record.description), element('p', `${date(record.createdAt)} · ${kb(record.bytes)}`, 'meta'));
@@ -171,7 +171,7 @@ async function loadQuestions(append = false) {
     else if (mode === 'all' && admin) { constraints = [sdk.orderByKey(), sdk.limitToLast(20)]; if (append && questionCursor) constraints.push(sdk.endBefore(questionCursor)); }
     else constraints = [sdk.orderByChild('isPublic'), sdk.equalTo(true), sdk.limitToLast(20)];
     const snapshot = await sdk.get(sdk.query(sdk.ref(db, 'questions'), ...constraints)); if (epoch !== questionEpoch) return;
-    const rows = []; snapshot.forEach(child => rows.push([child.key, child.val()])); questionCursor = rows[0]?.[0];
+    const rows = []; snapshot.forEach(child => { rows.push([child.key, child.val()]); }); questionCursor = rows[0]?.[0];
     for (const [id, record] of rows.reverse()) {
       const card = element('details', '', 'question-card');
       card.append(element('summary', `${record.answer ? '답변 완료' : '답변 대기'} · ${record.title}`), element('p', `${record.isPublic ? '공개' : '비공개'} · ${date(record.createdAt)}`, 'meta'), element('p', record.body, 'question-text'));
