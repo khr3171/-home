@@ -1,0 +1,25 @@
+검증 날짜: 2026-10-22
+
+완료:
+- community.js, compress.js, firebase-config.js JavaScript 문법 검사
+- database.rules.json, vercel.json JSON 파싱
+- HTML의 로컬 파일 참조 23개 존재 확인
+- Firebase SDK 13.1.0의 app/auth/database/app-check CDN 응답 HTTP 200 확인
+- 실제 브라우저의 Firebase 미설정 안내/로그인 및 게시 비활성화 확인
+- 실제 브라우저 게시판 화면 배치 확인
+- 실제 브라우저 Canvas 사진 압축 검증:
+  2400×1600 단순 이미지 → 1024×683, 2,102 bytes
+  1600×2400 노이즈 이미지 → 384×576, 58,270 bytes
+  100×80 작은 이미지 → 100×80, 997 bytes (확대 안 함)
+  각 결과의 최대 용량, 해상도, DB 문자열 길이, 이미지 재디코딩 확인
+  텍스트 파일/20MB 초과 파일/손상된 이미지 거절 확인
+- Firebase 공식 문서의 query 기반 보안 규칙 형식 대조
+
+미완료/제한:
+- Firebase 프로젝트가 제공되지 않아 실제 Google 로그인, 게시/읽기/답변/삭제,
+  다른 계정의 비공개 데이터 접근 차단, App Check는 서버에서 검증하지 못함
+- 보안 규칙 Emulator 실행 및 실제 Firebase 규칙 게시 미실시
+- Vercel/GitHub 업로드 미실시 (사용자가 직접 업로드할 파일 제공)
+- 압축 크기는 사진 내용에 따라 달라지며 위 결과는 테스트 이미지 기준
+
+연결 후 확인 순서는 먼저읽어주세요.md의 9번을 참고하세요.
