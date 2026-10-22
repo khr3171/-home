@@ -8,6 +8,7 @@ const kb = bytes => `${(bytes / 1024).toFixed(1)}KB`;
 const configured = ['apiKey', 'authDomain', 'databaseURL', 'projectId', 'appId'].every(key => firebaseConfig[key]);
 let sdk, db, auth, user, admin = false, compressed, fileVersion = 0, photoCursor, questionCursor, questionEpoch = 0, photoEpoch = 0;
 const imageCache = new Map();
+const page = document.body.dataset.page;
 function errorText(error) {
   const code = error?.code || '';
   if (code.includes('popup-closed')) return '로그인 창이 닫혔어요. 다시 눌러 주세요.';
@@ -94,7 +95,7 @@ $('upload-form').addEventListener('submit', async event => {
   finally { button.disabled = !compressed; }
 });
 async function loadPhotos(append = false) {
-  if (!db) return;
+  if (!db || page === 'questions') return;
   const epoch = ++photoEpoch; $('more-photos').disabled = true;
   if (!append) { photoCursor = null; $('photo-list').replaceChildren(); }
   say('photos-status', '사진 목록을 불러오는 중…');
@@ -145,7 +146,7 @@ $('question-form').addEventListener('submit', async event => {
   finally { $('question-fields').disabled = !user; }
 });
 async function loadQuestions(append = false) {
-  if (!db) return;
+  if (!db || page === 'gallery') return;
   const epoch = ++questionEpoch; const mode = $('question-filter').value;
   if (!append) { questionCursor = null; $('question-list').replaceChildren(); }
   $('more-questions').hidden = true; $('more-questions').disabled = true;

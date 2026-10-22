@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>질문하기 | 한걸음의 진심</title>
+<meta name="description" content="궁금한 점을 남기면 관리자가 답변해 드려요.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="community.css">
+<script type="module" src="community.js"></script>
+</head>
+<body data-page="questions">
+<a class="skip-link" href="#community-main">본문으로 바로 가기</a>
+<header class="community-header"><div class="wrap toolbar"><a href="index.html"><strong>한걸음의 진심</strong><small>부산형 경계선지능인 지원사업</small></a><a class="button light" href="index.html">홈으로</a></div></header>
+<main id="community-main" class="wrap community-main">
+<p class="eyebrow">함께 나누는 이야기</p><h1>질문하기</h1><p>궁금한 점을 남기면 관리자가 답변해 드려요.</p>
+<nav class="community-nav" aria-label="게시판 메뉴"><a href="gallery.html">갤러리</a><a href="questions.html" aria-current="page">질문하기</a></nav>
+<p id="setup-status" class="notice" role="status">게시판 연결을 확인하고 있어요.</p>
+<noscript><p class="notice">게시판을 이용하려면 브라우저의 JavaScript를 켜 주세요.</p></noscript>
+<section id="account" class="panel"><h2>로그인</h2><p>질문을 남기려면 Google 계정으로 로그인해 주세요. 관리자는 같은 버튼으로 로그인합니다.</p><div class="toolbar"><button id="login" class="button primary" disabled>Google로 로그인</button><button id="logout" class="button light" hidden>로그아웃</button><span id="account-status">로그인하지 않은 상태</span></div><p id="auth-status" role="status"></p></section>
+<section id="photos" class="community-section" hidden><div class="section-heading"><div><p class="eyebrow">함께한 순간</p><h2>활동 사진</h2></div><button id="refresh-photos" class="button light" disabled>새로고침</button></div>
+<div id="upload-panel" class="panel" hidden><h3>사진 올리기 · 관리자</h3><p>사진 한 장을 선택하면 자동으로 용량을 줄여요. 미리보기를 확인한 뒤 게시해 주세요.</p><form id="upload-form"><label for="photo-title">제목</label><input id="photo-title" maxlength="80" required><label for="photo-description">사진 설명</label><textarea id="photo-description" maxlength="500" rows="2" placeholder="사진의 모습을 설명해 주세요. 사진을 볼 수 없는 분에게도 도움이 돼요."></textarea><label for="photo-file">사진 선택 (JPEG, PNG, WebP · 원본 최대 20MB)</label><input id="photo-file" type="file" accept="image/jpeg,image/png,image/webp" required><img id="photo-preview" alt="압축한 사진 미리보기" hidden><p id="compression-status" role="status">긴 변 최대 1,024px · 목표 60KB · 최대 96KB · 원본 미보관</p><button id="publish-photo" class="button primary" disabled>사진 게시하기</button><p id="upload-status" role="status"></p></form></div>
+<p id="photos-status" role="status"></p><div id="photo-list" class="photo-grid"></div><button id="more-photos" class="button light" hidden>사진 더 보기</button></section>
+<section id="questions" class="community-section"><div class="section-heading"><div><p class="eyebrow">천천히 물어보세요</p><h2>질문과 답변</h2></div><button id="refresh-questions" class="button light" disabled>새로고침</button></div>
+<div class="panel"><h3>궁금한 점을 남겨 주세요</h3><p>기본은 비공개 질문이에요. 작성한 분과 관리자만 볼 수 있어요. 전화번호, 검사 결과 등 개인 정보는 적지 말아 주세요.</p><form id="question-form"><fieldset id="question-fields" disabled><label for="question-title">제목</label><input id="question-title" maxlength="100" required><label for="question-body">질문 내용</label><textarea id="question-body" maxlength="2000" rows="5" required></textarea><label class="check-label"><input id="question-public" type="checkbox"> 다른 방문자도 이 질문과 답변을 볼 수 있게 공개합니다.</label><button class="button primary" type="submit">질문 등록하기</button></fieldset><p id="question-status" role="status">로그인 후 질문을 남길 수 있어요.</p></form></div>
+<div class="toolbar"><label for="question-filter">보기</label><select id="question-filter"><option value="public">공개 질문 (최근 20개)</option><option value="mine" disabled>내 질문 (최근 20개)</option><option value="all" disabled>전체 질문 · 관리자</option></select></div><p id="questions-status" role="status"></p><div id="question-list"></div><button id="more-questions" class="button light" hidden>이전 질문 더 보기 · 관리자</button>
+</section>
+<footer><p>사진과 질문은 Firebase Realtime Database에 저장됩니다.</p><a href="index.html">홈페이지로 돌아가기</a></footer>
+</main>
+</body></html>
