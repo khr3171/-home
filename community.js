@@ -14,6 +14,7 @@ function errorText(error) {
   if (code.includes('popup-closed')) return '로그인 창이 닫혔어요. 다시 눌러 주세요.';
   if (code.includes('popup-blocked')) return '팝업이 차단됐어요. 이 사이트의 팝업을 허용해 주세요.';
   if (code.includes('unauthorized-domain')) return 'Firebase Authentication의 승인된 도메인에 현재 홈페이지 주소를 추가해 주세요.';
+  if (code.includes('operation-not-allowed') || code.includes('admin-restricted-operation')) return '익명 등록이 아직 준비되지 않았어요. 관리자: Firebase Authentication에서 익명(Anonymous) 로그인을 켜 주세요.';
   if (code.toLowerCase().includes('permission')) return '접근 권한이 없어요. 로그인 상태와 Firebase 보안 규칙을 확인해 주세요.';
   if (code.includes('network')) return '인터넷 연결을 확인하고 다시 시도해 주세요.';
   return '처리하지 못했어요. 인터넷 연결과 Firebase 설정을 확인한 뒤 다시 시도해 주세요.';
@@ -38,24 +39,37 @@ async function start() {
       check.initializeAppCheck(app, { provider: new check.ReCaptchaEnterpriseProvider(appCheckSiteKey), isTokenAutoRefreshEnabled: true });
     }
     db = sdk.getDatabase(app); auth = sdk.getAuth(app);
+    await sdk.setPersistence(auth, sdk.browserLocalPersistence);
     $('login').disabled = false;
     $('refresh-photos').disabled = false; $('refresh-questions').disabled = false;
     say('setup-status', '사진은 작게 압축해 저장하고, 질문은 필요한 내용만 보관합니다.');
     sdk.onAuthStateChanged(auth, async current => {
       user = current; admin = false; const uid = current?.uid;
       // 이전 계정의 비공개 내용을 즉시 화면에서 제거합니다.
-      questionEpoch++; $('question-list').replaceChildren(); $('upload-panel').hidden = true;
-      if (user) {
+      questionEpoch++; $('question-list').replaceChildren();
+      $('question-fields').disabled = true; $('upload-fields').disabled = true;
+      if (!current) {
+        $('login').hidden = false; $('logout').hidden = true;
+        $('account-status').textContent = '익명 이용 준비 중';
+        $('question-filter').options[1].disabled = true; $('question-filter').options[2].disabled = true;
+        $('question-filter').value = 'public';
+        await Promise.all([loadPhotos(), loadQuestions()]);
+        if (auth.currentUser) return;
+        try { await sdk.signInAnonymously(auth); }
+        catch (error) { say('setup-status', errorText(error), true); }
+        return;
+      }
+      if (!current.isAnonymous) {
         try { const record = await sdk.get(sdk.ref(db, `admins/${uid}`)); if (user?.uid !== uid) return; admin = record.val() === true; }
         catch { say('auth-status', '관리자 권한을 확인하지 못했어요. Firebase 보안 규칙을 확인해 주세요.', true); }
       }
       if (user?.uid !== uid) return;
-      $('login').hidden = !!user; $('logout').hidden = !user;
-      $('account-status').textContent = user ? `${user.displayName || '사용자'} · ${admin ? '관리자' : '로그인됨'}` : '로그인하지 않은 상태';
-      $('question-fields').disabled = !user; $('upload-panel').hidden = !admin;
+      $('login').hidden = !user.isAnonymous; $('logout').hidden = user.isAnonymous;
+      $('account-status').textContent = user.isAnonymous ? '익명으로 이용 중' : `${user.displayName || '사용자'} · ${admin ? '관리자' : '일반 사용자'}`;
+      $('question-fields').disabled = false; $('upload-fields').disabled = false;
       $('question-filter').options[1].disabled = !user; $('question-filter').options[2].disabled = !admin;
       $('question-filter').value = admin ? 'all' : user ? 'mine' : 'public';
-      say('question-status', user ? '질문을 남기면 관리자가 확인 후 답변해 드려요.' : '로그인 후 질문을 남길 수 있어요.');
+      say('question-status', '로그인 절차 없이 질문을 남길 수 있어요. 답변은 관리자만 작성합니다.');
       await Promise.all([loadPhotos(), loadQuestions()]);
     });
   } catch (error) { say('setup-status', errorText(error), true); }
@@ -81,13 +95,13 @@ $('photo-file').addEventListener('change', async () => {
   } catch (error) { if (version === fileVersion) say('compression-status', error.message || '사진을 읽을 수 없어요.', true); }
 });
 $('upload-form').addEventListener('submit', async event => {
-  event.preventDefault(); if (!admin || !compressed) return;
+  event.preventDefault(); if (!user || !compressed) return;
   const title = $('photo-title').value.trim(); if (!title) return say('upload-status', '사진 제목을 적어 주세요.', true);
   const button = $('publish-photo'); button.disabled = true;
   const pending = compressed;
   try {
-    const id = sdk.push(sdk.ref(db, 'photos')).key;
-    const metadata = { title, description: $('photo-description').value.trim(), createdAt: sdk.serverTimestamp(), bytes: pending.bytes, width: pending.width, height: pending.height };
+    const id = `${sdk.push(sdk.ref(db, 'photos')).key}_${user.uid}`;
+    const metadata = { owner: user.uid, title, description: $('photo-description').value.trim(), createdAt: sdk.serverTimestamp(), bytes: pending.bytes, width: pending.width, height: pending.height };
     await sdk.update(sdk.ref(db), { [`photos/${id}`]: metadata, [`photoData/${id}`]: pending.dataUrl });
     $('upload-form').reset(); fileVersion++; compressed = null; $('photo-preview').hidden = true;
     say('upload-status', '사진을 게시했어요.'); say('compression-status', '다음 사진을 선택해 주세요.'); await loadPhotos();
@@ -118,7 +132,7 @@ async function loadPhotos(append = false) {
         } catch { imageStatus.textContent = '사진을 불러오지 못했어요.'; retry.hidden = false; } finally { loading = false; }
       };
       const retry = action('사진 다시 불러오기', fetchImage); retry.hidden = true; body.append(retry);
-      if (admin) body.append(action('사진 삭제', async () => {
+      if (admin || user?.uid === record.owner) body.append(action('사진 삭제', async () => {
         if (!confirm('이 사진을 영구 삭제할까요? 복구할 수 없어요.')) return;
         await sdk.update(sdk.ref(db), { [`photos/${id}`]: null, [`photoData/${id}`]: null }); imageCache.delete(id); await loadPhotos();
       }, 'button light danger'));

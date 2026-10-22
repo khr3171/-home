@@ -10,8 +10,8 @@
     "photos": {
       ".read": "query.orderByKey && query.limitToLast != null && query.limitToLast <= 12",
       "$id": {
-        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
-        ".validate": "newData.hasChildren(['title', 'description', 'createdAt', 'bytes', 'width', 'height'])",
+        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (!data.exists() && $id.endsWith('_' + auth.uid) && newData.child('owner').val() === auth.uid) || (data.child('owner').val() === auth.uid && !newData.exists()))",
+        ".validate": "newData.hasChildren(['owner', 'title', 'description', 'createdAt', 'bytes', 'width', 'height'])",
         "title": {
           ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 80"
         },
@@ -32,13 +32,16 @@
         },
         "$other": {
           ".validate": false
+        },
+        "owner": {
+          ".validate": "newData.isString() && ((!data.exists() && newData.val() === auth.uid) || newData.val() === data.val())"
         }
       }
     },
     "photoData": {
       "$id": {
         ".read": "root.child('photos').child($id).exists()",
-        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || ($id.endsWith('_' + auth.uid) && (!data.exists() || !newData.exists())))",
         ".validate": "newData.isString() && newData.val().length <= 131100 && newData.val().matches(/^data:image\\/(webp|jpeg);base64,[A-Za-z0-9+/=]+$/)"
       }
     },
@@ -50,8 +53,8 @@
       ".read": "query.limitToLast != null && query.limitToLast <= 20 && ((query.orderByChild === 'isPublic' && query.equalTo === true) || (auth != null && query.orderByChild === 'owner' && query.equalTo === auth.uid) || (auth != null && root.child('admins').child(auth.uid).val() === true))",
       "$id": {
         ".read": "data.child('isPublic').val() === true || (auth != null && (data.child('owner').val() === auth.uid || root.child('admins').child(auth.uid).val() === true))",
-        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (!data.exists() && newData.child('owner').val() === auth.uid && auth.token.firebase.sign_in_provider === 'google.com') || (data.child('owner').val() === auth.uid && !newData.exists()))",
-        ".validate": "newData.hasChildren(['owner', 'title', 'body', 'isPublic', 'createdAt'])",
+        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (!data.exists() && newData.child('owner').val() === auth.uid) || (data.child('owner').val() === auth.uid && !newData.exists()))",
+        ".validate": "newData.hasChildren(['owner', 'title', 'body', 'isPublic', 'createdAt']) && (!newData.child('answer').exists() || root.child('admins').child(auth.uid).val() === true)",
         "owner": {
           ".validate": "newData.isString() && ((!data.exists() && newData.val() === auth.uid) || newData.val() === data.val())"
         },
